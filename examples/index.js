@@ -10,7 +10,7 @@ var auth = new Authing({
 });
 
 auth.list().then(function(res) {
-	// console.log(res);
+	console.log(res);
 }).catch(function(error) {
 	console.log('sss')
 	console.log(error);
@@ -26,13 +26,24 @@ auth.login({
 	console.log(error);
 });
 
-auth.register({
-	email: email,
-	password: password
-}).then(function(res) {
-	console.log(res);
-}).catch(function(error) {
-	console.log('sss')
-	console.log(error);
-});
+// auth.register({
+// 	email: email,
+// 	password: password
+// }).then(function(res) {
+// 	// console.log(res);
+// }).catch(function(error) {
+// 	console.log('sss')
+// 	console.log(error);
+// });
+
+// auth.update({
+// 	_id: '59e5fce735eebf1913cfe895',
+// 	nickname: 'fucku'
+// })
+// .then(function(res) {
+// 	console.log(res);
+// }).catch(function(error) {
+// 	console.log('sss')
+// 	console.log(error);
+// });
 

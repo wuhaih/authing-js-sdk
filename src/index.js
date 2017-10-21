@@ -20,10 +20,16 @@ var Authing = function(opts) {
 
 	this.initUserService();
 
-	// this._login({
-	// 	email: this.opts.email,
-	// 	password: this.opts.password
-	// });
+	this._login({
+		email: this.opts.email,
+		password: this.opts.password
+	}).then(function(res) {
+
+		
+		
+	}).catch(function(error) {
+
+	})
 }
 
 Authing.prototype = {
@@ -129,6 +135,11 @@ Authing.prototype = {
 			throw '_id is not provided';
 		}
 
+		return this.update({
+			_id: _id,
+			tokenExpiredAt: 0
+		});
+
 	},
 
 	list: function(page, count) {
@@ -184,12 +195,76 @@ Authing.prototype = {
 			throw '_id is not provided';
 		}
 
+		return this.UserService(`
+			mutation removeUsers($ids: [String]){
+			  removeUsers(ids: $ids) {
+			    _id
+			  }
+			}
+		`, {
+			ids: [_id]
+		}).then(function(res) {
+			return res.removeUsers;
+		});		
+
 	},
 
 	update: function(options) {
 		if(!options) {
 			throw 'options is not provided';
 		}
+
+		if(!options._id) {
+			throw '_id in options is not provided';
+		}
+
+		var 
+			_args = [],
+			_argsString = '',
+
+			_argsFiller = [],
+
+			keyTypeList = {
+				_id: 'String',
+				email: 'String',
+				emailVerified: 'Boolean',
+				username: 'String',
+				nickname: 'String',
+				company: 'String',
+				photo: 'String',
+				browser: 'String',
+				password: 'String',
+				registerInClient: 'String',
+				token: 'String',
+				tokenExpiredAt: 'String',
+				loginsCount: 'Int',
+				lastLogin: 'String',
+				lastIP: 'String',
+				signedUp: 'String',
+				blocked: 'Boolean',
+				isDeleted: 'Boolean'
+			};
+
+		for(var key in options) {
+			if(keyTypeList[key]) {
+				_args.push('$' + key + ': ' + keyTypeList[key]);
+				_argsFiller.push(key + ': $' + key);
+			}
+		}
+
+		_argsString = _args.join(', ');
+
+		return this.UserService(`
+			mutation UpdateUser(${_argsString}){
+			  updateUser(options: {
+			  	${_argsFiller.join(', ')}
+			  }) {
+			    _id
+			  }
+			}
+		`, options).then(function(res) {
+			return res.updateUser;
+		});		
 	}
 }
 

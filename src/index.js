@@ -17,23 +17,82 @@ var Authing = function(opts) {
 
 	this.opts = opts;
 	this.authed = false;
+	this.authSuccess = false;
 
-	this.initUserService();
+	var self = this;
 
-	this._login({
-		email: this.opts.email,
-		password: this.opts.password
-	}).then(function(res) {
-
-		
-		
+	return this._auth().then(function(result) {
+		if(result) {
+			self.authed = true;
+			self.authSuccess = true;
+			self.initUserService();
+		}else {
+			self.authed = true;
+			self.authSuccess = false;
+		}
+		return self;
 	}).catch(function(error) {
-
-	})
+		self.authed = true;
+		self.authSuccess = true;
+		throw 'auth failed, please check your email, password and client ID.'
+	});	
 }
 
 Authing.prototype = {
+
+	_auth: function() {
+
+		if(!this._AuthService) {
+			this._AuthService = graphql(configs.services.user.host, {
+			  	method: "POST"
+			});
+		}
+
+		let options = {
+			email: this.opts.email,
+			password: this.opts.password,
+			clientId: this.opts.clientId
+		}
+
+		return this._AuthService(`
+			query ($email: String, $password: String, $clientId: String){
+			  isClientOfUser(email: $email, password: $password, clientId: $clientId)
+			}
+		`, options);
+	},
+
+	_authUser: function() {
+
+		if(!this.authed) {
+
+			var self = this;
+
+			return this._auth().then(function(result) {
+				if(result) {
+					console.log('success')
+					self.authed = true;
+					self.authSuccess = true;
+					self.initUserService();
+				}
+			}).catch(function(error) {
+				self.authed = true;
+				self.authSuccess = true;
+				throw 'auth failed, please check your email, password and client ID.'
+			});
+
+		}
+
+	},
+
+	haveAccess: function() {
+		if(!this.authSuccess) {
+			throw 'have no access, please check your email, password and client ID.';			
+		}
+	},
+
 	initUserService: function(headers) {
+
+		this.haveAccess();
 
 		if(headers) {
 			this.UserService = graphql(configs.services.user.host, {
@@ -52,7 +111,9 @@ Authing.prototype = {
 
 		if(!options) {
 			throw 'options is not provided';
-		}		
+		}
+
+		this.haveAccess();
 
 		return this.UserService(`
 			mutation login($email: String!, $password: String, $lastIP: String) {
@@ -86,6 +147,8 @@ Authing.prototype = {
 	},
 
 	register: function(options) {
+
+		this.haveAccess();
 
 		if(!options) {
 			throw 'options is not provided';
@@ -131,6 +194,8 @@ Authing.prototype = {
 
 	logout: function(_id) {
 
+		this.haveAccess();
+
 		if(!_id) {
 			throw '_id is not provided';
 		}
@@ -143,6 +208,8 @@ Authing.prototype = {
 	},
 
 	list: function(page, count) {
+
+		this.haveAccess();
 
 		page = page || 1;
 		count = count || 10;
@@ -191,6 +258,9 @@ Authing.prototype = {
 	},
 
 	remove: function(_id) {
+
+		this.haveAccess();
+
 		if(!_id) {
 			throw '_id is not provided';
 		}
@@ -210,6 +280,9 @@ Authing.prototype = {
 	},
 
 	update: function(options) {
+
+		this.haveAccess();
+
 		if(!options) {
 			throw 'options is not provided';
 		}

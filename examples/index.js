@@ -9,41 +9,45 @@ var auth = new Authing({
 	password: 'xieyang123!'
 });
 
-auth.list().then(function(res) {
-	console.log(res);
-}).catch(function(error) {
-	console.log('sss')
-	console.log(error);
+auth.then(function(auth) {
+
+	auth.list().then(function(res) {
+		console.log(res);
+	}).catch(function(error) {
+		console.log('sss')
+		console.log(error);
+	});
+
+	auth.login({
+		email: email,
+		password: password
+	}).then(function(res) {
+		// console.log(res);
+	}).catch(function(error) {
+		console.log('sss')
+		console.log(error);
+	});
+
+	// auth.register({
+	// 	email: email,
+	// 	password: password
+	// }).then(function(res) {
+	// 	// console.log(res);
+	// }).catch(function(error) {
+	// 	console.log('sss')
+	// 	console.log(error);
+	// });
+
+	// auth.update({
+	// 	_id: '59e5fce735eebf1913cfe895',
+	// 	nickname: 'fucku'
+	// })
+	// .then(function(res) {
+	// 	console.log(res);
+	// }).catch(function(error) {
+	// 	console.log('sss')
+	// 	console.log(error);
+	// });
+
 });
-
-auth.login({
-	email: email,
-	password: password
-}).then(function(res) {
-	// console.log(res);
-}).catch(function(error) {
-	console.log('sss')
-	console.log(error);
-});
-
-// auth.register({
-// 	email: email,
-// 	password: password
-// }).then(function(res) {
-// 	// console.log(res);
-// }).catch(function(error) {
-// 	console.log('sss')
-// 	console.log(error);
-// });
-
-// auth.update({
-// 	_id: '59e5fce735eebf1913cfe895',
-// 	nickname: 'fucku'
-// })
-// .then(function(res) {
-// 	console.log(res);
-// }).catch(function(error) {
-// 	console.log('sss')
-// 	console.log(error);
-// });
 

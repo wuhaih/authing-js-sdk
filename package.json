@@ -1,0 +1,27 @@
+{
+  "name": "authing-js-sdk",
+  "version": "0.0.1",
+  "description": "authing js offical sdk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Authing/authing-js-sdk.git"
+  },
+  "keywords": [
+    "authing",
+    "auth",
+    "oauth"
+  ],
+  "author": "authing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Authing/authing-js-sdk/issues"
+  },
+  "homepage": "https://github.com/Authing/authing-js-sdk#readme",
+  "dependencies": {
+    "graphql.js": "^0.4.18"
+  }
+}

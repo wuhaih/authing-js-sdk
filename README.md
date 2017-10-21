@@ -35,24 +35,29 @@ var clientId = 'your_client_id'; //your client ID applied on our website
 var myAccount = 'myemail@myemail.com';
 var myPasswd = 'myPasswd';
 
-var Auth = new Authing({
+var auth = new Authing({
 	clientId: clientId,
 	email: myAccount,
 	pasword: myPasswd
 });
 
-var email = 'test@testmail.com';
-var password = 'testpassword';
+auth.then(function(auth) {
 
-Auth.login({
-	email: email,
-	password: password,
-	clientId: clientId
-}).then(function(res) {
-	console.log(res);	
-}).catch(function(error) {
-	conosle.log(error);	
+	var email = 'test@testmail.com';
+	var password = 'testpassword';
+
+	Auth.login({
+		email: email,
+		password: password,
+		clientId: clientId
+	}).then(function(res) {
+		console.log(res);	
+	}).catch(function(error) {
+		conosle.log(error);	
+	});
+	
 });
+
 ```
 
 To know how to get a client id, please read  [How to get a client ID](/quick_start/howto.md).
@@ -72,7 +77,7 @@ const main = async () => {
 	const myAccount = 'myemail@myemail.com';
 	const myPasswd = 'myPasswd';
 
-	const Auth = new Authing({
+	const Auth = await new Authing({
 		clientId: clientId,
 		email: myAccount,
 		pasword: myPasswd

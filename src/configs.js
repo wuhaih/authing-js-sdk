@@ -1,7 +1,7 @@
 module.exports = {
 	services: {
 		user: {
-			host: 'http://localhost:5555/graphql'
+			host: 'http://user-api.authing.cn/graphql'
 		}
 	}
 }

@@ -15,6 +15,10 @@ var Authing = function(opts) {
 		throw 'password is not provided';
 	}
 
+	if(opts.debug) {
+		configs.services.user.host = 'http://localhost:5555/graphql'
+	}
+
 	this.opts = opts;
 	this.authed = false;
 	this.authSuccess = false;

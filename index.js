@@ -1,5 +1,5 @@
 var graphql = require('graphql.js');
-var configs = require('./configs');
+var configs = require('./src/configs');
 
 var Authing = function(opts) {
 

@@ -118,10 +118,12 @@ Authing.prototype = {
 			throw 'options is not provided';
 		}
 
+		options['registerInClient'] = this.opts.clientId;
+
 		this.haveAccess();
 
 		return this.UserService(`
-			mutation login($email: String!, $password: String, $lastIP: String, $registerInClient: String) {
+			mutation login($email: String!, $password: String, $lastIP: String, $registerInClient: String!) {
 			    login(email: $email, password: $password, lastIP: $lastIP, registerInClient: $registerInClient) {
 				    _id
 				    email
@@ -226,7 +228,7 @@ Authing.prototype = {
 		}
 
 		return this.UserService(`
-			query users($registerInClient: String, $page: Int, $count: Int) {
+			query users($registerInClient: String!, $page: Int, $count: Int) {
 			  users(registerInClient: $registerInClient, page: $page, count: $count) {
 			    _id
 			    email
@@ -312,7 +314,7 @@ Authing.prototype = {
 				photo: 'String',
 				browser: 'String',
 				password: 'String',
-				registerInClient: 'String',
+				registerInClient: 'String!',
 				token: 'String',
 				tokenExpiredAt: 'String',
 				loginsCount: 'Int',

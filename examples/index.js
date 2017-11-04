@@ -14,7 +14,7 @@ auth.then(function(auth) {
 	auth.list().then(function(res) {
 		console.log(res);
 	}).catch(function(error) {
-		console.log('sss')
+		console.log('list')
 		console.log(error);
 	});
 
@@ -22,9 +22,9 @@ auth.then(function(auth) {
 		email: email,
 		password: password
 	}).then(function(res) {
-		// console.log(res);
+		console.log(res);
 	}).catch(function(error) {
-		console.log('sss')
+		console.log('login')
 		console.log(error);
 	});
 

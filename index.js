@@ -16,7 +16,7 @@ var Authing = function(opts) {
 	}
 
 	if(opts.debug) {
-		configs.services.user.host = 'http://localhost:5555/graphql'
+		configs.services.user.host = 'http://user_service:5555/graphql'
 	}
 
 	this.opts = opts;

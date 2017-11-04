@@ -55,7 +55,8 @@ Authing.prototype = {
 		let options = {
 			email: this.opts.email,
 			password: this.opts.password,
-			clientId: this.opts.clientId
+			clientId: this.opts.clientId,
+			registerInClient: this.opts.clientId
 		}
 
 		return this._AuthService(`
@@ -120,8 +121,8 @@ Authing.prototype = {
 		this.haveAccess();
 
 		return this.UserService(`
-			mutation login($email: String!, $password: String, $lastIP: String) {
-			    login(email: $email, password: $password, lastIP: $lastIP) {
+			mutation login($email: String!, $password: String, $lastIP: String, $registerInClient: String) {
+			    login(email: $email, password: $password, lastIP: $lastIP, registerInClient: $registerInClient) {
 				    _id
 				    email
 				    emailVerified

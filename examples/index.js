@@ -1,4 +1,4 @@
-var Authing = require('../src/index.js');
+var Authing = require('../index.js');
 
 var email = "xieyang@dodora.cn";
 var password = 'xieyang123!';

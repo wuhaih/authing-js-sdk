@@ -37,7 +37,7 @@ var Authing = function(opts) {
 		return self;
 	}).catch(function(error) {
 		self.authed = true;
-		self.authSuccess = true;
+		self.authSuccess = false;
 		throw 'auth failed, please check your email, password and client ID.'
 	});	
 }
@@ -169,14 +169,24 @@ Authing.prototype = {
 			    $password: String, 
 			    $lastIP: String, 
 			    $forceLogin: Boolean,
-			    $registerInClient: String!
+			    $registerInClient: String!,
+			    $oauth: String,
+			    $username: String,
+			    $nickname: String,
+			    $registerMethod: String,
+			    $photo: String
 			) {
 			    register(userInfo: {
 			        email: $email,
 			        password: $password,
 			        lastIP: $lastIP,
 			        forceLogin: $forceLogin,
-			        registerInClient: $registerInClient
+			        registerInClient: $registerInClient,
+			        oauth: $oauth,
+			        registerMethod: $registerMethod,
+			        photo: $photo,
+			        username: $username,
+			        nickname: $nickname
 			    }) {
 			        _id,
 			        email,

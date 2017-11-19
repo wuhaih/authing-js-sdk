@@ -1,12 +1,12 @@
 var Authing = require('../index.js');
 
 var email = "xieyang@dodora.cn";
-var password = 'xieyang123!';
+var password = "xieyang123!";
+var secret = '52f6bf832c7a8e9aa2a467df91393a73';
 
 var auth = new Authing({
-	clientId: '59e374332023830871913ebf',
-	email: 'xieyang@dodora.cn',
-	password: 'xieyang123!'
+	clientId: '5a0da5e81bc086000170a546',
+	secret: secret
 });
 
 auth.then(function(auth) {
@@ -18,36 +18,41 @@ auth.then(function(auth) {
 		console.log(error);
 	});
 
+	auth.register({
+		email: email,
+		password: password
+	}).then(function(res) {
+		console.log('注册成功')
+		console.log(res);
+	}).catch(function(error) {
+		console.log('sss')
+		console.log(error);
+	});
+
 	auth.login({
 		email: email,
 		password: password
 	}).then(function(res) {
+		console.log('登录成功')		
 		console.log(res);
 	}).catch(function(error) {
 		console.log('login')
 		console.log(error);
 	});
 
-	// auth.register({
-	// 	email: email,
-	// 	password: password
-	// }).then(function(res) {
-	// 	// console.log(res);
-	// }).catch(function(error) {
-	// 	console.log('sss')
-	// 	console.log(error);
-	// });
 
-	// auth.update({
-	// 	_id: '59e5fce735eebf1913cfe895',
-	// 	nickname: 'fucku'
-	// })
-	// .then(function(res) {
-	// 	console.log(res);
-	// }).catch(function(error) {
-	// 	console.log('sss')
-	// 	console.log(error);
-	// });
+	auth.update({
+		_id: '5a11386528245a0001fdca83',
+		nickname: 'fucku',
+		username: 'fuckuuu'
+	})
+	.then(function(res) {
+		console.log('修改成功')
+		console.log(res);
+	}).catch(function(error) {
+		console.log('sss')
+		console.log(error);
+	});
 
 });
 

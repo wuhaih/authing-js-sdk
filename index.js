@@ -7,12 +7,8 @@ var Authing = function(opts) {
 		throw 'clientId is not provided';
 	}
 
-	if(!opts.email) {
-		throw 'email is not provided';
-	}
-
-	if(!opts.password) {
-		throw 'password is not provided';
+	if(!opts.secret) {
+		throw 'app secret is not provided';
 	}
 
 	if(opts.debug) {
@@ -26,9 +22,10 @@ var Authing = function(opts) {
 	var self = this;
 
 	return this._auth().then(function(result) {
-		if(result) {
+		if(result.getAccessTokenByAppSecret) {
 			self.authed = true;
 			self.authSuccess = true;
+			self.accessToken = 'Bearer ' + result.getAccessTokenByAppSecret;
 			self.initUserService();
 		}else {
 			self.authed = true;
@@ -38,7 +35,7 @@ var Authing = function(opts) {
 	}).catch(function(error) {
 		self.authed = true;
 		self.authSuccess = false;
-		throw 'auth failed, please check your email, password and client ID.'
+		throw 'auth failed, please check your secret and client ID.'
 	});	
 }
 
@@ -53,15 +50,13 @@ Authing.prototype = {
 		}
 
 		let options = {
-			email: this.opts.email,
-			password: this.opts.password,
+			secret: this.opts.secret,
 			clientId: this.opts.clientId,
-			registerInClient: this.opts.clientId
 		}
 
 		return this._AuthService(`
-			query ($email: String, $password: String, $clientId: String){
-			  isClientOfUser(email: $email, password: $password, clientId: $clientId)
+			query ($secret: String, $clientId: String){
+			  getAccessTokenByAppSecret(secret: $secret, clientId: $clientId)
 			}
 		`, options);
 	},
@@ -73,16 +68,16 @@ Authing.prototype = {
 			var self = this;
 
 			return this._auth().then(function(result) {
-				if(result) {
-					console.log('success')
+				if(result.getAccessTokenByAppSecret) {
 					self.authed = true;
 					self.authSuccess = true;
+					self.accessToken = 'Bearer ' + result.getAccessTokenByAppSecret;
 					self.initUserService();
 				}
 			}).catch(function(error) {
 				self.authed = true;
 				self.authSuccess = true;
-				throw 'auth failed, please check your email, password and client ID.'
+				throw 'auth failed, please check your secret and client ID.'
 			});
 
 		}
@@ -91,18 +86,18 @@ Authing.prototype = {
 
 	haveAccess: function() {
 		if(!this.authSuccess) {
-			throw 'have no access, please check your email, password and client ID.';			
+			throw 'have no access, please check your secret and client ID.';			
 		}
 	},
 
-	initUserService: function(headers) {
+	initUserService: function() {
 
 		this.haveAccess();
 
-		if(headers) {
+		if(this.accessToken) {
 			this.UserService = graphql(configs.services.user.host, {
 			  	method: "POST",
-			  	headers: headers
+			  	headers: this.accessToken
 			});
 		}else {
 			this.UserService = graphql(configs.services.user.host, {
@@ -240,33 +235,36 @@ Authing.prototype = {
 		return this.UserService(`
 			query users($registerInClient: String!, $page: Int, $count: Int) {
 			  users(registerInClient: $registerInClient, page: $page, count: $count) {
-			    _id
-			    email
-			    emailVerified
-			    username
-			    nickname
-			    company
-			    photo
-			    browser
-			    token
-			    tokenExpiredAt
-			    loginsCount
-			    lastLogin
-			    lastIP
-			    signedUp
-			    blocked
-			    isDeleted
-			    userLocation {
-			      _id
-			      when
-			      where
-			    }
-			    userLoginHistory {
-			      _id
-			      when
-			      success
-			      ip
-			    }
+			  	list {
+				    _id
+				    email
+				    emailVerified
+				    username
+				    nickname
+				    company
+				    photo
+				    browser
+				    token
+				    tokenExpiredAt
+				    loginsCount
+				    lastLogin
+				    lastIP
+				    signedUp
+				    blocked
+				    isDeleted
+				    userLocation {
+				      _id
+				      when
+				      where
+				    }
+				    userLoginHistory {
+				      _id
+				      when
+				      success
+				      ip
+				    }
+			  	}
+			  	totalCount
 			  }
 			}
 		`, options).then(function(res) {

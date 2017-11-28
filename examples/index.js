@@ -2,14 +2,17 @@ var Authing = require('../index.js');
 
 var email = "xieyang@dodora.cn";
 var password = "xieyang123!";
-var secret = '52f6bf832c7a8e9aa2a467df91393a73';
+var secret = '12cc14d3464cb57503a4eb099ca48e3e';
 
 var auth = new Authing({
-	clientId: '5a0da5e81bc086000170a546',
-	secret: secret
+	clientId: '59f86b4832eb28071bdd9214',
+	secret: secret,
+	debug: true
 });
 
 auth.then(function(auth) {
+
+	auth.ui()
 
 	auth.list().then(function(res) {
 		console.log(res);

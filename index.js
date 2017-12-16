@@ -12,13 +12,9 @@ var Authing = function(opts) {
 		throw 'app secret is not provided';
 	}
 
-	if(opts.debug) {
-		configs.services.user.host = 'http://user_service:5555/graphql'
-		// configs.services.user.host = 'http://localhost:5555/graphql';
-	}
-
 	if(opts.host) {
-		configs.services.user.host = opts.host;		
+		configs.services.user.host = opts.host.user || configs.services.user.host;
+		configs.services.oauth.host = opts.host.oauth || configs.services.oauth.host;
 	}
 
 	this.opts = opts;
@@ -95,13 +91,13 @@ Authing.prototype = {
 
 	_readOAuthList() {
 
-		if(!this._AuthService) {
-			this._AuthService = graphql(configs.services.user.host, {
+		if(!this._OAuthService) {
+			this._OAuthService = graphql(configs.services.oauth.host, {
 			  	method: "POST"
 			});
 		}
 
-		return this._AuthService(`
+		return this._OAuthService(`
 			query getOAuthList($clientId: String!) {
 				ReadOauthList(clientId: $clientId) {
 					_id
@@ -626,6 +622,10 @@ Authing.prototype = {
 		`, options).then(function(res) {
 			return res.updateUser;
 		});		
+	},
+
+	readOAuthList() {
+		return this._readOAuthList();
 	}
 }
 

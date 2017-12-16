@@ -13,7 +13,6 @@ var auth = new Authing({
 auth.then(function(auth) {
 
 	auth.ui()
-
 	auth.list().then(function(res) {
 		console.log(res);
 	}).catch(function(error) {

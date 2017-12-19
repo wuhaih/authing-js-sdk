@@ -1,10 +1,10 @@
 module.exports = {
 	services: {
 		user: {
-			host: 'http://users.authing.cn/graphql'
+			host: 'http://users-dev.authing.cn/graphql'
 		},
 		oauth: {
-			host: 'http://oauth.authing.cn/graphql'
+			host: 'http://oauth-dev.authing.cn/graphql'
 		}
 	},
 	openSSLSecret: `-----BEGIN PUBLIC KEY-----

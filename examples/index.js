@@ -12,27 +12,27 @@ var auth = new Authing({
 
 auth.then(function(auth) {
 
-	// auth.list().then(function(res) {
-	// 	console.log('list',res);
-	// }).catch(function(error) {
-	// 	console.log('list')
-	// 	console.log(error);
-	// });
+	auth.list().then(function(res) {
+		console.log('list',res);
+	}).catch(function(error) {
+		console.log('list')
+		console.log(error);
+	});
 
-	// auth.readOAuthList().then(function(list) {
-	// 	console.log(list[0].data);
-	// });
+	auth.readOAuthList().then(function(list) {
+		console.log(list[0].data);
+	});
 
-	// auth.register({
-	// 	email: email,
-	// 	password: password
-	// }).then(function(res) {
-	// 	console.log('注册成功')
-	// 	console.log(res);
-	// }).catch(function(error) {
-	// 	console.log('sss')
-	// 	console.log(error);
-	// });
+	auth.register({
+		email: email,
+		password: password
+	}).then(function(res) {
+		console.log('注册成功')
+		console.log(res);
+	}).catch(function(error) {
+		console.log('sss')
+		console.log(error);
+	});
 
 	auth.login({
 		email: email,
@@ -46,18 +46,18 @@ auth.then(function(auth) {
 	});
 
 
-	// auth.update({
-	// 	_id: '5a11386528245a0001fdca83',
-	// 	nickname: 'fucku',
-	// 	username: 'fuckuuu'
-	// })
-	// .then(function(res) {
-	// 	console.log('修改成功')
-	// 	console.log(res);
-	// }).catch(function(error) {
-	// 	console.log('sss')
-	// 	console.log(error);
-	// });
+	auth.update({
+		_id: '5a11386528245a0001fdca83',
+		nickname: 'fucku',
+		username: 'fuckuuu'
+	})
+	.then(function(res) {
+		console.log('修改成功')
+		console.log(res);
+	}).catch(function(error) {
+		console.log('sss')
+		console.log(error);
+	});
 
 });
 

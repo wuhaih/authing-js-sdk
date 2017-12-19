@@ -1,6 +1,32 @@
 var graphql = require('graphql.js');
 var configs = require('./src/configs');
 var fs = require('fs');
+var rp = require('request-promise');
+
+var _encryption;
+if(configs.inBrowser) {
+	var JSEncrypt = require('jsencrypt');
+	_encryption = function(paw) {
+		var encrypt = new JSEncrypt.JSEncrypt(); // 实例化加密对象
+		encrypt.setPublicKey(configs.openSSLSecret); // 设置公钥
+		var encryptoPasswd = encrypt.encrypt(paw); // 加密明文
+		return encryptoPasswd;
+	};
+}else {
+	var crypto = require('crypto');
+	_encryption = function(paw) {
+		var publicKey = configs.openSSLSecret;
+		var pawBuffer, encryptText;
+		pawBuffer = new Buffer(paw); // jsencrypt 库在加密后使用了base64编码,所以这里要先将base64编码后的密文转成buffer
+		encryptText = crypto.publicEncrypt({
+			key: new Buffer(publicKey), // 如果通过文件方式读入就不必转成Buffer
+			padding: crypto.constants.RSA_PKCS1_PADDING
+		}, pawBuffer).toString('base64');
+		console.log(encryptText)
+		return encryptText;
+	}
+}
+
 
 var Authing = function(opts) {
 
@@ -17,6 +43,10 @@ var Authing = function(opts) {
 		configs.services.oauth.host = opts.host.oauth || configs.services.oauth.host;
 	}
 
+	// if(opts.debug) {		
+	// 	configs.services.user.host = 'http://localhost:5555/graphql'		
+	// 	configs.services.oauth.host = 'http://localhost:5556/graphql';		
+	// }
 	this.opts = opts;
 	this.authed = false;
 	this.authSuccess = false;
@@ -58,7 +88,7 @@ Authing.prototype = {
 			secret: this.opts.secret,
 			clientId: this.opts.clientId,
 		}
-
+// return Promise.resolve({})
 		return this._AuthService(`
 			query ($secret: String, $clientId: String){
 			  getAccessTokenByAppSecret(secret: $secret, clientId: $clientId)
@@ -104,6 +134,7 @@ Authing.prototype = {
 					name
 					image
 					description
+					enabled
 				}
 			}
 		`, {
@@ -382,6 +413,10 @@ Authing.prototype = {
 
 		options['registerInClient'] = this.opts.clientId;
 
+		if(options.password) {
+			options.password = _encryption(options.password);
+		}
+
 		this.haveAccess();
 
 		return this.UserService(`
@@ -424,6 +459,10 @@ Authing.prototype = {
 		}
 
 		options.registerInClient = this.opts.clientId;
+
+		if(options.password) {
+			options.password = _encryption(options.password);
+		}
 
 		return this.UserService(`
 			mutation register(
@@ -625,7 +664,38 @@ Authing.prototype = {
 	},
 
 	readOAuthList() {
-		return this._readOAuthList();
+		var self = this;
+		return this._readOAuthList().then(function(data) {
+			var list = data.ReadOauthList;
+			return list.filter(function(item) {
+				return item.enabled;
+			});
+		}).then(function(list) {
+			var promises = [];
+			if(configs.inBrowser) {
+				promises = list.map(function(item){
+					return fetch(`${configs.services.oauth.host.replace('/graphql', '')}/oauth/${item.name}/url/${self.opts.clientId}`).then(function(data){
+						return data.json();
+					});
+				})
+			}else {
+				promises = list.map(function(item){
+					return rp({
+						uri: `${configs.services.oauth.host.replace('/graphql', '')}/oauth/${item.name}/url/${self.opts.clientId}`
+					}).then(function(data) {
+						return JSON.parse(data);
+					});
+				});
+			}
+
+			return Promise.all(promises);
+			
+		}).then(function(list) {
+			return list;
+		}).catch(function(e) {
+			// console.log(e);
+			throw '获取oauth服务失败';
+		});
 	}
 }
 

@@ -676,10 +676,9 @@ Authing.prototype = {
 					});
 				})
 			}else {
-				// var request = require('request');
+				var http = require('http');
 				promises = list.map(function(item){
 					return new Promise(function(resolve, reject){
-						var http = require('http');
 						http.get(`${configs.services.oauth.host.replace('/graphql', '')}/oauth/${item.name}/url/${self.opts.clientId}`, function(response) {
 							var str = '';
 							response.setEncoding('utf8');

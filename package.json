@@ -1,6 +1,6 @@
 {
   "name": "authing-js-sdk",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "authing js offical sdk",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,10 @@
   },
   "homepage": "https://github.com/Authing/authing-js-sdk#readme",
   "dependencies": {
-    "graphql.js": "^0.4.18",
-    "jsencrypt": "^2.3.1"
+    "crypto": "^1.0.1",
+    "graphql.js": "^0.4.20",
+    "jsencrypt": "^2.3.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
   }
 }

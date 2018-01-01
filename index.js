@@ -21,7 +21,7 @@ if(configs.inBrowser) {
 			key: new Buffer(publicKey), // 如果通过文件方式读入就不必转成Buffer
 			padding: crypto.constants.RSA_PKCS1_PADDING
 		}, pawBuffer).toString('base64');
-		console.log(encryptText)
+		// console.log(encryptText)
 		return encryptText;
 	}
 }
@@ -82,7 +82,7 @@ Authing.prototype = {
 			secret: this.opts.secret,
 			clientId: this.opts.clientId,
 		}
-// return Promise.resolve({})
+
 		return this._AuthService(`
 			query ($secret: String, $clientId: String){
 			  getAccessTokenByAppSecret(secret: $secret, clientId: $clientId)
@@ -378,23 +378,29 @@ Authing.prototype = {
 
 	haveAccess: function() {
 		if(!this.authSuccess) {
-			throw 'have no access, please check your secret and client ID.';			
+			throw 'have no access, please check your secret and client ID.';
 		}
 	},
 
-	initUserService: function() {
+	initUserService: function(authToken) {
 
 		this.haveAccess();
 
+		let self = this;
+
 		if(this.accessToken) {
-			this.UserService = graphql(configs.services.user.host, {
-			  	method: "POST",
-			  	headers: this.accessToken
-			});
-		}else {
-			this.UserService = graphql(configs.services.user.host, {
-			  	method: "POST",
-			});
+			if(authToken) {
+				this.UserService = graphql(configs.services.user.host, {
+				  	method: "POST",
+				  	headers: {
+				  		'Authorization': authToken
+				  	}
+				});				
+			}else {
+				this.UserService = graphql(configs.services.user.host, {
+			  		method: "POST"
+				});
+			}
 		}
 
 	},
@@ -441,7 +447,11 @@ Authing.prototype = {
 	},
 
 	login: function(options) {
-		return this._login(options);
+		let self = this;
+		return this._login(options).then(function(user) {
+			self.initUserService(user.token);
+			return user;
+		});
 	},
 
 	register: function(options) {
@@ -702,7 +712,7 @@ Authing.prototype = {
 		}).then(function(list) {
 			return list;
 		}).catch(function(e) {
-			console.log(e);
+			// console.log(e);
 			throw '获取oauth服务失败';
 		});
 	}

@@ -1,6 +1,6 @@
 var graphql = require('graphql.js');
 var configs = require('./src/configs');
-var fs = require('fs');
+// var fs = require('fs');
 var rp = require('request-promise');
 
 var _encryption;

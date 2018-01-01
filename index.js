@@ -480,8 +480,7 @@ Authing.prototype = {
 			    $username: String,
 			    $nickname: String,
 			    $registerMethod: String,
-				$photo: String,
-				$verifyCode: String
+				$photo: String
 			) {
 			    register(userInfo: {
 			    	unionid: $unionid,
@@ -495,7 +494,6 @@ Authing.prototype = {
 			        photo: $photo,
 			        username: $username,
 					nickname: $nickname,
-					verifyCode: $verifyCode
 			    }) {
 			        _id,
 			        email,

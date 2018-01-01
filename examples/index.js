@@ -16,6 +16,8 @@ var auth = new Authing({
 
 auth.then(function(auth) {
 
+	auth.readOAuthList().then(e => console.log('authinglist',e))
+
 	email = "597055914@qq.com";
 	password = "123456";
 

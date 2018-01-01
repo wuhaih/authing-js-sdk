@@ -1,7 +1,6 @@
 var graphql = require('graphql.js');
 var configs = require('./src/configs');
-var fs = require('fs');
-var rp = require('request-promise');
+// var fs = require('fs');
 
 var _encryption;
 if(configs.inBrowser) {
@@ -686,13 +685,23 @@ Authing.prototype = {
 					});
 				})
 			}else {
+				var http = require('http');
 				promises = list.map(function(item){
-					return rp({
-						uri: `${configs.services.oauth.host.replace('/graphql', '')}/oauth/${item.name}/url/${self.opts.clientId}`
-					}).then(function(data) {
-						return JSON.parse(data);
+					return new Promise(function(resolve, reject){
+						http.get(`${configs.services.oauth.host.replace('/graphql', '')}/oauth/${item.name}/url/${self.opts.clientId}`, function(response) {
+							var str = '';
+							response.setEncoding('utf8');
+							response.on('data', function (chunk) { str += chunk });
+							response.on('end', function () {
+								resolve(JSON.parse(str));
+							});
+							response.on('error', function(e) {
+								reject(e);
+							})
+						})
 					});
 				});
+
 			}
 
 			return Promise.all(promises);
@@ -700,7 +709,7 @@ Authing.prototype = {
 		}).then(function(list) {
 			return list;
 		}).catch(function(e) {
-			// console.log(e);
+			console.log(e);
 			throw '获取oauth服务失败';
 		});
 	}

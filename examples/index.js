@@ -16,6 +16,8 @@ var auth = new Authing({
 
 auth.then(function(auth) {
 
+	auth.readOAuthList().then(e => console.log('authinglist',e))
+
 	email = "597055914@qq.com";
 	password = "123456";
 
@@ -26,8 +28,6 @@ auth.then(function(auth) {
 		console.log('获取用户列表失败!');		
 		console.log(error);
 	});
-
-	auth.readOAuthList().then(e => console.log('authinglist',e))
 
 	auth.readOAuthList().then(function(list) {
 		console.log(list);

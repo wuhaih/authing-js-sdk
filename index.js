@@ -378,33 +378,29 @@ Authing.prototype = {
 
 	haveAccess: function() {
 		if(!this.authSuccess) {
-			throw 'have no access, please check your secret and client ID.';			
+			throw 'have no access, please check your secret and client ID.';
 		}
 	},
 
-	initUserService: function() {
+	initUserService: function(authToken) {
 
 		this.haveAccess();
 
 		let self = this;
 
-		// console.log(self.accessToken)
-
-		self.accessToken = self.accessToken.replace('Bearer ')
-
 		if(this.accessToken) {
-			console.log('have accessToken')
-			this.UserService = graphql(configs.services.user.host, {
-			  	method: "POST"
-			  	// headers: {
-			  	// 	'Authorization': self.accessToken,
-			  	// 	'Content-Type': 'application/json'
-			  	// }
-			});
-		}else {
-			this.UserService = graphql(configs.services.user.host, {
-			  	method: "POST",
-			});
+			if(authToken) {
+				this.UserService = graphql(configs.services.user.host, {
+				  	method: "POST",
+				  	headers: {
+				  		'Authorization': authToken
+				  	}
+				});				
+			}else {
+				this.UserService = graphql(configs.services.user.host, {
+			  		method: "POST"
+				});
+			}
 		}
 
 	},
@@ -451,7 +447,11 @@ Authing.prototype = {
 	},
 
 	login: function(options) {
-		return this._login(options);
+		let self = this;
+		return this._login(options).then(function(user) {
+			self.initUserService(user.token);
+			return user;
+		});
 	},
 
 	register: function(options) {

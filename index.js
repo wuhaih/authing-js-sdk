@@ -414,8 +414,8 @@ Authing.prototype = {
 		this.haveAccess();
 
 		return this.UserService(`
-			mutation login($unionid: String, $email: String, $password: String, $lastIP: String, $registerInClient: String!) {
-			    login(unionid: $unionid, email: $email, password: $password, lastIP: $lastIP, registerInClient: $registerInClient) {
+			mutation login($unionid: String, $email: String, $password: String, $lastIP: String, $registerInClient: String!, $verifyCode: String) {
+			    login(unionid: $unionid, email: $email, password: $password, lastIP: $lastIP, registerInClient: $registerInClient, verifyCode: $verifyCode) {
 				    _id
 				    email
 				    emailVerified
@@ -470,7 +470,8 @@ Authing.prototype = {
 			    $username: String,
 			    $nickname: String,
 			    $registerMethod: String,
-			    $photo: String
+				$photo: String,
+				$verifyCode: String
 			) {
 			    register(userInfo: {
 			    	unionid: $unionid,
@@ -483,7 +484,8 @@ Authing.prototype = {
 			        registerMethod: $registerMethod,
 			        photo: $photo,
 			        username: $username,
-			        nickname: $nickname
+					nickname: $nickname,
+					verifyCode: $verifyCode
 			    }) {
 			        _id,
 			        email,

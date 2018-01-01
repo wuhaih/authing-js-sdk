@@ -83,7 +83,7 @@ Authing.prototype = {
 			secret: this.opts.secret,
 			clientId: this.opts.clientId,
 		}
-// return Promise.resolve({})
+
 		return this._AuthService(`
 			query ($secret: String, $clientId: String){
 			  getAccessTokenByAppSecret(secret: $secret, clientId: $clientId)
@@ -387,10 +387,19 @@ Authing.prototype = {
 
 		this.haveAccess();
 
+		let self = this;
+
+		console.log(self.accessToken)
+
+		self.accessToken = self.accessToken.replace('Bearer ')
+
 		if(this.accessToken) {
 			this.UserService = graphql(configs.services.user.host, {
 			  	method: "POST",
-			  	headers: this.accessToken
+			  	headers: {
+			  		'Authorization': self.accessToken,
+			  		'Content-Type': 'application/json'
+			  	}
 			});
 		}else {
 			this.UserService = graphql(configs.services.user.host, {

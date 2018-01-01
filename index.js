@@ -1,7 +1,6 @@
 var graphql = require('graphql.js');
 var configs = require('./src/configs');
 // var fs = require('fs');
-var rp = require('request-promise');
 
 var _encryption;
 if(configs.inBrowser) {
@@ -678,6 +677,7 @@ Authing.prototype = {
 				})
 			}else {
 				promises = list.map(function(item){
+					var rp = require('request-promise');
 					return rp({
 						uri: `${configs.services.oauth.host.replace('/graphql', '')}/oauth/${item.name}/url/${self.opts.clientId}`
 					}).then(function(data) {

@@ -27,6 +27,8 @@ auth.then(function(auth) {
 		console.log(error);
 	});
 
+	auth.readOAuthList().then(e => console.log('authinglist',e))
+
 	auth.readOAuthList().then(function(list) {
 		console.log(list);
 	});

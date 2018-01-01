@@ -30,6 +30,7 @@ auth.then(function(auth) {
 	});
 
 	auth.readOAuthList().then(function(list) {
+		console.log('oauth list')
 		console.log(list);
 	});
 

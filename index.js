@@ -21,7 +21,7 @@ if(configs.inBrowser) {
 			key: new Buffer(publicKey), // 如果通过文件方式读入就不必转成Buffer
 			padding: crypto.constants.RSA_PKCS1_PADDING
 		}, pawBuffer).toString('base64');
-		console.log(encryptText)
+		// console.log(encryptText)
 		return encryptText;
 	}
 }
@@ -388,17 +388,18 @@ Authing.prototype = {
 
 		let self = this;
 
-		console.log(self.accessToken)
+		// console.log(self.accessToken)
 
 		self.accessToken = self.accessToken.replace('Bearer ')
 
 		if(this.accessToken) {
+			console.log('have accessToken')
 			this.UserService = graphql(configs.services.user.host, {
-			  	method: "POST",
-			  	headers: {
-			  		'Authorization': self.accessToken,
-			  		'Content-Type': 'application/json'
-			  	}
+			  	method: "POST"
+			  	// headers: {
+			  	// 	'Authorization': self.accessToken,
+			  	// 	'Content-Type': 'application/json'
+			  	// }
 			});
 		}else {
 			this.UserService = graphql(configs.services.user.host, {
@@ -709,7 +710,7 @@ Authing.prototype = {
 		}).then(function(list) {
 			return list;
 		}).catch(function(e) {
-			console.log(e);
+			// console.log(e);
 			throw '获取oauth服务失败';
 		});
 	}
